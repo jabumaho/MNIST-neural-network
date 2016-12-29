@@ -1,6 +1,6 @@
 from network_controller import *
 
-controller = NetworkController("./data")
+controller = NetworkController("input("Path to folder with MNIST dataset")")
 
 while True:
 	a = input("To train a new network press 1, to load an existing network press 2 or 99 to exit:")
