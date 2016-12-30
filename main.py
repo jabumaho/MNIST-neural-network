@@ -1,9 +1,9 @@
 from network_controller import *
 
-controller = NetworkController(input("Path to folder with MNIST dataset"))
+controller = NetworkController("./data")
 
 while True:
-	a = input("To train a new network press 1, to load an existing network press 2 or 99 to exit:")
+	a = input("To train a new network press 1, to load an existing network press 2 or press 99 to exit:")
 	if a == 1:
 		controller.setup_network()
 		controller.train_network(limit=int(input("Number of training chunks: ")), chunksize=int(input("Number of images per chunk: ")))

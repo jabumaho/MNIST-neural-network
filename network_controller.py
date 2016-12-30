@@ -1,6 +1,7 @@
 import load_mnist
 from network import *
 from random import randint
+import os
 
 
 class NetworkController:
@@ -40,6 +41,9 @@ class NetworkController:
 		return np.array(ichunk), np.array(lchunk)
 
 	def train_network(self, limit=6000, chunksize=10):
+		self.errorpath = input("Path to folder for errorhistory: ")
+		if not os.path.isdir(self.errorpath):
+			os.makedirs(self.errorpath)
 		for i in xrange(limit):
 			im, la = self.get_training_chunk(chunksize)
 			self.train_chunk(i, im, la)
@@ -68,10 +72,11 @@ class NetworkController:
 			print "Maximum number of itertions reached on chunk {0} with error {1}".format(it, self.error)
 
 	def save(self):
-		path = input("Path to location: ")
-		path += input("Name of network: ") + ".nn"
-		#name = input("File Name for saved network: ")
-		#path = "C:/Temp/" + name + ".nn"
+		path = input("Path to the folder where the network shall be saved: ")
+		if not os.path.isdir(path):
+			os.makedirs(path)
+		path += input("Name for the network: ") + ".nn"
+
 		with open(path, "w+") as file:
 			for i in self.network.shape:
 				file.write(str(i))
@@ -87,8 +92,8 @@ class NetworkController:
 
 	def load(self):
 		path = input("Path to file: ")
-		#name = input("File Name: ")
-		#path = "C:/Temp/" + name + ".nn"
+		while not os.path.exists(path):
+			path = input("File does not exist, please try again: ")
 		with open(path, "r") as file:
 			f = file.read()
 		strlen = len(f)
@@ -138,10 +143,8 @@ class NetworkController:
 		if float(abs(newavg - oldavg)) / self.nudge_window < self.nudge_tolerance:
 			self.network.nudge(self.nudge_scale)
 
-	@staticmethod
-	def save_errorhistory(history, chunk):
-		path = input("Path to file: ")
-		#path = "C:/Temp/mnisterrors/chunk" + str(chunk) + ".txt"
+	def save_errorhistory(self, history, chunk):
+		path = self.errorpath + str(chunk) + ".txt"
 		with open(path, "w+") as file:
 			for herror in history:
 				file.write(str(herror))
